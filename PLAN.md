@@ -14,6 +14,23 @@ The feature list is small. The brief cares about **judgement**: what you notice 
 | Reviews are public, with no login | This is the only write flow and the main abuse risk. It needs validation, rate limiting, length limits and safe output. |
 | Import runs nightly, must be safe to re-run, reviews must survive | The import inserts new products and updates existing ones by SKU. It never hard-deletes a product. |
 
+## 1a. Company context and design direction
+
+**Company:** BASF (the contacts in the brief are @basf.com). The brief itself only says "a chemical company", and the product names in the CSV are fictional.
+
+**Who uses it:** B2B technical buyers: formulators, R&D chemists and procurement in personal care, coatings, agriculture, food and similar industries. They know the terminology and want facts, not marketing, so the UI should feel like a precise technical catalogue, not a consumer shop.
+
+**Design principles**
+- **Industrial and trustworthy.** Calm, corporate, plenty of white space, no gimmicks. Inspired by BASF's corporate look: a dark blue primary, a lighter blue accent, neutral greys. We don't use the BASF logo or trademarks; the product is called "Product Finder" and the colours are design tokens that can be swapped for the official palette.
+- **Data first, easy to scan.** Product cards lead with name and SKU, then chemical name, function, application area, region and certifications. The detail page reads like a short technical data sheet (a key/value spec table plus description).
+- **Status is unmistakable.** Clear, colour-coded and labelled tags (Active / Phase-out / Discontinued), never colour alone. A Discontinued page shows a prominent banner. This addresses the "customers ask about products we no longer sell" problem.
+- **Certifications as badges** (Vegan, Halal, Kosher, RSPO, REACH, EU Ecolabel, readily biodegradable). These are key buying criteria in these industries, so they're also filters.
+- **Trade-fair mobile.** Mobile-first, large touch targets (≥44px), high contrast for bright halls, filters in a slide-out drawer, small bundle and fast first load on weak venue Wi-Fi, a native share button.
+- **Accessible (WCAG 2.1 AA).** Contrast, keyboard navigation, labelled form controls, visible focus.
+- **Reviews look like peer feedback.** A star rating plus a short text, with author name and date. No "verified" claims, since there's no auth.
+
+**Tone:** factual and concise. English only for v1 (i18n is a "next step" for a global company).
+
 ## 2. Problems in the data
 
 The file has 202 data rows and 200 unique SKUs.
