@@ -1,5 +1,7 @@
 name: product-finder
 
+x-database-url: &database-url postgresql://productfinder:productfinder@db:5432/productfinder
+
 services:
   db:
     image: postgres:18-alpine
@@ -17,14 +19,31 @@ services:
       timeout: 3s
       retries: 10
 
-  api:
-    build: ./backend
+  # One-shot: apply migrations, then import data/products.csv. Runs on every
+  # `docker compose up`; safe because the import is idempotent and never touches reviews.
+  migrate:
+    build:
+      context: ./backend
+      target: migrate
     environment:
-      PORT: 3000
-      DATABASE_URL: postgresql://productfinder:productfinder@db:5432/productfinder
+      DATABASE_URL: *database-url
+    volumes:
+      - ./data:/data:ro
     depends_on:
       db:
         condition: service_healthy
+    restart: "no"
+
+  api:
+    build:
+      context: ./backend
+      target: runtime
+    environment:
+      PORT: 3000
+      DATABASE_URL: *database-url
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
     ports:
       - "3000:3000"
 
