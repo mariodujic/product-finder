@@ -24,21 +24,25 @@ Then open **http://localhost:4200**.
 
 To stop the stack, run `docker compose down`. To also wipe the database, run `docker compose down -v`.
 
-## Local development (without containerising the apps)
+## Local development (live reload)
 
 **Prerequisites:** Node.js 24+, npm 11+, Docker (for PostgreSQL only).
 
 ```bash
-docker compose up -d db              # PostgreSQL only
-
-cd backend && npm ci && npm run start:dev     # API on :3000
-cd frontend && npm ci && npm start            # UI on :4200, proxies /api to :3000
+npm install      # once: installs root tooling, backend and frontend
+npm run dev      # PostgreSQL in Docker + API (:3000) + UI (:4200), all with live reload
 ```
+
+Open http://localhost:4200. The UI proxies `/api` to the API. Press `Ctrl+C` to stop the apps. `npm run db:stop` stops the database.
+
+If the full Docker stack is running, stop it first with `docker compose stop api web`, because it uses the same ports.
 
 ## Tests
 
 ```bash
-cd backend  && npm test            # unit tests
+npm test                           # everything (from the repo root)
+
+cd backend  && npm test            # backend unit tests
 cd backend  && npm run test:e2e    # API end-to-end tests
-cd frontend && npm test            # component and service tests
+cd frontend && npm test            # frontend component and service tests
 ```
