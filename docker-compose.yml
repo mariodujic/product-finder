@@ -1,0 +1,40 @@
+name: product-finder
+
+services:
+  db:
+    image: postgres:18-alpine
+    environment:
+      POSTGRES_USER: productfinder
+      POSTGRES_PASSWORD: productfinder
+      POSTGRES_DB: productfinder
+    ports:
+      - "5432:5432"
+    volumes:
+      - db-data:/var/lib/postgresql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U productfinder -d productfinder"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  api:
+    build: ./backend
+    environment:
+      PORT: 3000
+      DATABASE_URL: postgresql://productfinder:productfinder@db:5432/productfinder
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      - "3000:3000"
+
+  web:
+    build: ./frontend
+    depends_on:
+      api:
+        condition: service_healthy
+    ports:
+      - "4200:80"
+
+volumes:
+  db-data:
