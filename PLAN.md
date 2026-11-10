@@ -126,3 +126,17 @@ Requests are validated with `class-validator`. The API is documented with Swagge
 2. **Discontinued products:** hidden from search by default with an "include discontinued" toggle; Phase-out shown with a warning badge; detail pages of discontinued/delisted products stay reachable with a banner (shared links never 404).
 3. **Region:** filtering by a specific region also includes **Global** products.
 4. **Docker:** the whole stack runs with one `docker compose up` (db → migrate+seed → api → web).
+
+## 7. Evidence log (for DECISIONS.md)
+
+**Search at 50k (2026-11-10).** 50,000 synthetic products in PostgreSQL 18, Docker on a laptop:
+
+| Query | Time |
+|---|---|
+| Selective text search ("s-4999", 8 hits): BitmapOr over the 4 trigram GIN indexes | ~1 ms |
+| Broad text search ("lauret", 5,713 hits = 11%): planner correctly picks a sequential scan | ~50 ms |
+| First page, no filters, sorted by name | ~8 ms |
+| Facet GROUP BY function | ~9 ms |
+| Region + certification filter count (GIN on `certifications`) | ~5 ms |
+
+A search request runs about 12 such queries in parallel (page, total, 3 grouped facets, about 7 certification counts). That's acceptable for v1. Next steps if needed: cache facet counts per query, or a single CTE query for all facets.
