@@ -19,14 +19,17 @@ services:
       timeout: 3s
       retries: 10
 
-  # One-shot: apply migrations, then import data/products.csv. Runs on every
-  # `docker compose up`; safe because the import is idempotent and never touches reviews.
+  # One-shot: apply migrations, import data/products.csv, add demo reviews. Runs on
+  # every `docker compose up`; safe because every step is idempotent and user reviews
+  # are never touched.
   migrate:
     build:
       context: ./backend
       target: migrate
     environment:
       DATABASE_URL: *database-url
+      # Set to "false" to start without the sample reviews marked "(demo)".
+      SEED_DEMO_REVIEWS: ${SEED_DEMO_REVIEWS:-true}
     volumes:
       - ./data:/data:ro
     depends_on:

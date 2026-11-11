@@ -23,12 +23,14 @@
     "db:migrate:new": "prisma migrate dev --create-only",
     "import": "ts-node --transpile-only src/import/import.cli.ts",
     "import:sample": "npm run import -- ../data/products.csv",
-    "db:prepare": "prisma migrate deploy && npm run import:sample"
+    "db:prepare": "prisma migrate deploy && npm run import:sample && npm run seed:demo-reviews",
+    "seed:demo-reviews": "ts-node --transpile-only src/reviews/seed-demo-reviews.cli.ts"
   },
   "dependencies": {
     "@nestjs/common": "^11.0.1",
     "@nestjs/core": "^11.0.1",
     "@nestjs/platform-express": "^11.0.1",
+    "@nestjs/throttler": "6.7.1",
     "@prisma/adapter-pg": "7.10.1",
     "@prisma/client": "7.10.1",
     "class-transformer": "0.5.1",

@@ -8,12 +8,9 @@ COPY . .
 RUN npx prisma generate && npm run build
 
 # ---- migrate: one-shot job run by docker compose before the API starts ----
-# Applies pending migrations, then imports the PIM export mounted at /data.
-# Exit code 2 = import aborted by its safety guard: the database is unchanged and
-# still valid, so the API may start. Any other failure stops the stack.
 FROM build AS migrate
 ENV NODE_ENV=production
-CMD ["sh", "-c", "npx prisma migrate deploy && node dist/import/import.cli.js \"${IMPORT_FILE:-/data/products.csv}\"; code=$?; [ $code -eq 2 ] && exit 0 || exit $code"]
+CMD ["sh", "docker/migrate-and-seed.sh"]
 
 # ---- production dependencies only ----
 FROM build AS prod-deps

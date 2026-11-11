@@ -1,8 +1,7 @@
-import { INestApplication } from '@nestjs/common';
+import { NestExpressApplication } from '@nestjs/platform-express';
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import request from 'supertest';
-import { App } from 'supertest/types';
 import { Product } from '../src/generated/prisma/client';
 import { ProductStatus } from '../src/generated/prisma/enums';
 import { ImportService } from '../src/import/import.service';
@@ -20,7 +19,7 @@ import { createTestApp } from './support/test-app';
  * constants, so the tests stay valid if the sample data changes.
  */
 describe('Products API (e2e)', () => {
-  let app: INestApplication<App>;
+  let app: NestExpressApplication;
   let prisma: PrismaService;
   let all: Product[];
 
