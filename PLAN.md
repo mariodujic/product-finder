@@ -140,3 +140,5 @@ Requests are validated with `class-validator`. The API is documented with Swagge
 | Region + certification filter count (GIN on `certifications`) | ~5 ms |
 
 A search request runs about 12 such queries in parallel (page, total, 3 grouped facets, about 7 certification counts). That's acceptable for v1. Next steps if needed: cache facet counts per query, or a single CTE query for all facets.
+
+**Frontend version (decided 2026-11-11).** Angular **21** + PrimeNG **21.1.10** (MIT), not Angular 22. PrimeNG 22 (July 2026) moved to the commercial "PrimeUI License": free only for organisations under $1M revenue and 10 employees, needs a license key, and shows a watermark without one. It's also the only PrimeNG line that supports Angular 22. Angular 21 is in LTS until about May 2027. Upgrade path: buy PrimeNG licenses, then `ng update` to 22. Verified: no `@primeui/license-manager` in the dependency tree; primeng, primeicons and @primeuix/* are all MIT.
