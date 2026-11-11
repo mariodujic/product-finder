@@ -1,0 +1,52 @@
+<form class="review-form" [formGroup]="form" (ngSubmit)="submit()" novalidate>
+  <h3 class="review-form__title">Share your experience</h3>
+  <p class="review-form__note">Your review is public. Please don't include confidential formulation details.</p>
+
+  <div class="field">
+    <span class="field__label" id="rating-label">Your rating <span aria-hidden="true">*</span></span>
+    <p-rating formControlName="rating" ariaLabelledBy="rating-label" />
+    @if (showError('rating')) {
+      <small class="field__error" role="alert">Please choose 1 to 5 stars.</small>
+    }
+  </div>
+
+  <div class="field">
+    <label class="field__label" for="review-author">Your name or role <span aria-hidden="true">*</span></label>
+    <input id="review-author" pInputText formControlName="authorName" autocomplete="name"
+      [attr.maxlength]="limits.authorMax" placeholder="e.g. Ana, R&D chemist"
+      [attr.aria-invalid]="showError('authorName')" aria-describedby="review-author-error" />
+    @if (showError('authorName')) {
+      <small id="review-author-error" class="field__error" role="alert">Please enter at least {{ limits.authorMin }} characters.</small>
+    }
+  </div>
+
+  <div class="field">
+    <label class="field__label" for="review-title">Title <span class="field__optional">(optional)</span></label>
+    <input id="review-title" pInputText formControlName="title" [attr.maxlength]="limits.titleMax" />
+  </div>
+
+  <div class="field">
+    <label class="field__label" for="review-body">Your review <span aria-hidden="true">*</span></label>
+    <textarea id="review-body" pTextarea formControlName="body" rows="5" [autoResize]="true"
+      [attr.maxlength]="limits.bodyMax" placeholder="How did it perform in your application?"
+      [attr.aria-invalid]="showError('body')" aria-describedby="review-body-hint"></textarea>
+    <small id="review-body-hint" class="field__hint">
+      @if (showError('body')) {
+        <span class="field__error" role="alert">Please write at least {{ limits.bodyMin }} characters.</span>
+      }
+      <span class="field__counter">{{ form.controls.body.value.length }}/{{ limits.bodyMax }}</span>
+    </small>
+  </div>
+
+  <!-- Honeypot: invisible to people and screen readers; bots fill it in. -->
+  <div class="honeypot" aria-hidden="true">
+    <label for="review-website">Website</label>
+    <input id="review-website" type="text" formControlName="website" tabindex="-1" autocomplete="off" />
+  </div>
+
+  @if (serverError(); as error) {
+    <p-message severity="error" [text]="error" />
+  }
+
+  <p-button type="submit" label="Publish review" icon="pi pi-send" [loading]="submitting()" />
+</form>

@@ -1,0 +1,34 @@
+<div class="filters">
+  @for (group of groups(); track group.key) {
+    <fieldset class="group">
+      <legend class="group__label">{{ group.label }}</legend>
+      @if (group.hint) {
+        <p class="group__hint">{{ group.hint }}</p>
+      }
+      @for (option of group.options; track option.value) {
+        <div class="option" [class.option--empty]="!option.selected && option.count === 0">
+          <p-checkbox
+            [inputId]="optionId(group.key, option.value)"
+            [binary]="true"
+            [ngModel]="option.selected"
+            [disabled]="!option.selected && option.count === 0"
+            (ngModelChange)="toggle(group.key, option.value, $event)"
+          />
+          <label class="option__label" [for]="optionId(group.key, option.value)">{{ option.value }}</label>
+          <span class="option__count" aria-hidden="true">{{ option.count }}</span>
+        </div>
+      } @empty {
+        <p class="group__hint">Loading…</p>
+      }
+    </fieldset>
+  }
+
+  <div class="toggle">
+    <p-toggleswitch
+      [inputId]="idPrefix() + '-include-discontinued'"
+      [ngModel]="state().includeDiscontinued"
+      (ngModelChange)="setIncludeDiscontinued($event)"
+    />
+    <label [for]="idPrefix() + '-include-discontinued'">Include discontinued products</label>
+  </div>
+</div>

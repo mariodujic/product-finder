@@ -1,0 +1,114 @@
+<p-toast position="bottom-center" />
+
+<nav class="detail-nav">
+  <p-button label="Back to results" icon="pi pi-arrow-left" [text]="true" (onClick)="back()" />
+</nav>
+
+@if (current(); as p) {
+  <article class="detail">
+    <header class="detail__header">
+      <div>
+        <p class="detail__sku">{{ p.sku }}</p>
+        <h1 class="detail__name">{{ p.name }}</h1>
+        <p class="detail__chemical">{{ p.chemicalName }}</p>
+      </div>
+      <div class="detail__header-actions">
+        <app-status-tag [status]="p.status" [isListed]="p.isListed" />
+        <p-button label="Share" icon="pi pi-share-alt" severity="secondary" [outlined]="true" (onClick)="share()" />
+      </div>
+    </header>
+
+    @if (notice(); as n) {
+      <p-message [severity]="n.severity" [text]="n.text" icon="pi pi-info-circle" styleClass="detail__notice" />
+    }
+
+    <div class="detail__layout">
+      <section class="sheet" aria-labelledby="sheet-title">
+        <h2 id="sheet-title" class="section-title">Product data</h2>
+        <dl class="sheet__list">
+          <div><dt>SKU</dt><dd>{{ p.sku }}</dd></div>
+          <div><dt>Chemical name</dt><dd>{{ p.chemicalName || '–' }}</dd></div>
+          <div><dt>Function</dt><dd>{{ p.function }}</dd></div>
+          <div><dt>Application area</dt><dd>{{ p.applicationArea }}</dd></div>
+          <div><dt>Region</dt><dd>{{ p.region }}</dd></div>
+          <div><dt>Launch year</dt><dd>{{ p.launchYear ?? 'Unknown' }}</dd></div>
+          <div>
+            <dt>Certifications</dt>
+            <dd>
+              @if (p.certifications.length) {
+                <ul class="certs">
+                  @for (cert of p.certifications; track cert) {
+                    <li class="cert"><i class="pi pi-verified" aria-hidden="true"></i> {{ cert }}</li>
+                  }
+                </ul>
+              } @else {
+                None listed
+              }
+            </dd>
+          </div>
+        </dl>
+        @if (p.description) {
+          <h2 class="section-title">Description</h2>
+          <p class="sheet__description">{{ p.description }}</p>
+        }
+      </section>
+
+      <section class="reviews" aria-labelledby="reviews-title">
+        <h2 id="reviews-title" class="section-title">Customer reviews</h2>
+        <div class="reviews__summary">
+          @if (p.rating.count) {
+            <span class="reviews__average">{{ p.rating.average }}</span>
+            <div>
+              <p-rating [ngModel]="p.rating.average" [readonly]="true" [attr.aria-label]="'Average ' + p.rating.average + ' out of 5'" />
+              <span class="reviews__count">{{ p.rating.count }} {{ p.rating.count === 1 ? 'review' : 'reviews' }}</span>
+            </div>
+          } @else {
+            <p class="reviews__none">No reviews yet.@if (canReview()) { Be the first to share your experience.}</p>
+          }
+        </div>
+
+        @if (reviewData(); as page) {
+          @if (page.items.length) {
+            <app-review-list [reviews]="page.items" />
+            @if (page.total > reviewsPerPage) {
+              <p-paginator
+                [first]="(page.page - 1) * page.pageSize"
+                [rows]="page.pageSize"
+                [totalRecords]="page.total"
+                [pageLinkSize]="3"
+                (onPageChange)="onReviewPage($event)"
+              />
+            }
+          }
+        } @else if (reviews.error()) {
+          <p-message severity="warn" text="Reviews could not be loaded right now." />
+        }
+
+        @if (canReview()) {
+          <app-review-form [sku]="p.sku" (submitted)="onReviewSubmitted()" />
+        } @else {
+          <p-message severity="secondary" text="New reviews are closed because this product is no longer sold." />
+        }
+      </section>
+    </div>
+  </article>
+} @else if (notFound()) {
+  <section class="state">
+    <i class="pi pi-question-circle state__icon" aria-hidden="true"></i>
+    <h1>Product not found</h1>
+    <p>We couldn't find a product with SKU <strong>{{ sku() }}</strong>. It may never have been part of the catalogue.</p>
+    <p-button label="Search the catalogue" routerLink="/products" />
+  </section>
+} @else if (errorMessage(); as error) {
+  <p-message severity="error">
+    <span>{{ error }}</span>
+    <p-button label="Try again" size="small" [text]="true" (onClick)="product.reload()" />
+  </p-message>
+} @else {
+  <div class="loading" aria-busy="true" aria-label="Loading product">
+    <p-skeleton width="8rem" height="1rem" />
+    <p-skeleton width="60%" height="2.5rem" />
+    <p-skeleton width="40%" height="1.25rem" />
+    <p-skeleton height="16rem" borderRadius="10px" />
+  </div>
+}

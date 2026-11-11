@@ -1,0 +1,66 @@
+.review-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding: 1.25rem;
+  border: 1px solid var(--pf-border);
+  border-radius: 10px;
+  background: var(--pf-surface);
+
+  &__title {
+    margin: 0;
+    font-size: 1.1rem;
+  }
+
+  &__note {
+    margin: -0.5rem 0 0;
+    font-size: 0.85rem;
+    color: var(--pf-text-muted);
+  }
+
+  input,
+  textarea {
+    width: 100%;
+    font-size: 1rem;
+  }
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+
+  &__label {
+    font-weight: 600;
+    font-size: 0.9rem;
+  }
+
+  &__optional {
+    font-weight: 400;
+    color: var(--pf-text-muted);
+  }
+
+  &__hint {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+  }
+
+  &__error {
+    color: var(--pf-danger);
+  }
+
+  &__counter {
+    margin-left: auto;
+    color: var(--pf-text-muted);
+    font-variant-numeric: tabular-nums;
+  }
+}
+
+.honeypot {
+  position: absolute;
+  left: -10000px;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}

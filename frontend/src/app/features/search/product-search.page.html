@@ -1,0 +1,141 @@
+<p-toast position="bottom-center" />
+
+<section class="search">
+  <header class="search__header">
+    <h1 class="search__title">Find the right product</h1>
+    <p class="search__lead">Search by product name, chemical name or SKU, then narrow down by function, application and certification.</p>
+
+    <form class="search__form" role="search" (submit)="$event.preventDefault()">
+      <label class="visually-hidden" for="product-search">Search products</label>
+      <p-iconfield class="search__field">
+        <p-inputicon class="pi pi-search" />
+        <input
+          id="product-search"
+          pInputText
+          type="search"
+          autocomplete="off"
+          placeholder="e.g. polysorbate, emulsifier, P-10002"
+          [ngModel]="searchText()"
+          (ngModelChange)="onType($event)"
+          name="q"
+        />
+      </p-iconfield>
+      @if (searchText()) {
+        <p-button icon="pi pi-times" [text]="true" severity="secondary" ariaLabel="Clear search" (onClick)="clearSearch()" />
+      }
+    </form>
+  </header>
+
+  <div class="search__layout">
+    <aside class="search__sidebar" aria-label="Filters">
+      <app-filter-panel idPrefix="side" [facets]="shown()?.facets" [state]="state()" (changed)="update($event)" />
+    </aside>
+
+    <div class="search__results">
+      <div class="toolbar">
+        <p class="toolbar__count" aria-live="polite">
+          @if (shown(); as r) {
+            <strong>{{ r.total }}</strong> {{ r.total === 1 ? 'product' : 'products' }}
+          } @else {
+            Searching…
+          }
+        </p>
+        <div class="toolbar__actions">
+          <p-button
+            class="toolbar__filters-btn"
+            icon="pi pi-filter"
+            [label]="filterCount() ? 'Filters (' + filterCount() + ')' : 'Filters'"
+            severity="secondary"
+            [outlined]="true"
+            (onClick)="filtersOpen.set(true)"
+          />
+          <label class="visually-hidden" for="sort">Sort by</label>
+          <p-select
+            inputId="sort"
+            [options]="sortOptions"
+            optionLabel="label"
+            optionValue="value"
+            [ngModel]="state().sort"
+            (ngModelChange)="update({ sort: $event })"
+            ariaLabel="Sort by"
+          />
+          <p-button icon="pi pi-share-alt" severity="secondary" [text]="true" ariaLabel="Share this search" (onClick)="share()" />
+        </div>
+      </div>
+
+      @if (chips().length) {
+        <ul class="chips" aria-label="Active filters">
+          @for (chip of chips(); track chip.key + chip.value) {
+            <li>
+              <button type="button" class="chip" (click)="removeChip(chip)" [attr.aria-label]="'Remove filter ' + chip.label">
+                {{ chip.label }} <i class="pi pi-times" aria-hidden="true"></i>
+              </button>
+            </li>
+          }
+          <li>
+            <button type="button" class="chip chip--clear" (click)="clearAll()">Clear all</button>
+          </li>
+        </ul>
+      }
+
+      @if (errorMessage(); as error) {
+        <p-message severity="error" styleClass="state-message">
+          <span>{{ error }}</span>
+          <p-button label="Try again" size="small" [text]="true" (onClick)="results.reload()" />
+        </p-message>
+      } @else if (shown(); as r) {
+        @if (r.items.length) {
+          <ul class="grid" [class.grid--loading]="results.isLoading()" [attr.aria-busy]="results.isLoading()">
+            @for (product of r.items; track product.sku) {
+              <li><app-product-card [product]="product" /></li>
+            }
+          </ul>
+          @if (r.total > r.pageSize) {
+            <p-paginator
+              [first]="(r.page - 1) * r.pageSize"
+              [rows]="r.pageSize"
+              [totalRecords]="r.total"
+              [rowsPerPageOptions]="pageSizes"
+              [pageLinkSize]="3"
+              (onPageChange)="onPage($event)"
+            />
+          }
+        } @else {
+          <div class="empty">
+            <i class="pi pi-search empty__icon" aria-hidden="true"></i>
+            <h2>No products match</h2>
+            @if (hasCriteria()) {
+              <p>Try fewer filters or a shorter search term.</p>
+              <p-button label="Clear search and filters" [outlined]="true" (onClick)="clearAll()" />
+            } @else {
+              <p>The catalogue is empty. Has the PIM import run?</p>
+            }
+          </div>
+        }
+      } @else {
+        <ul class="grid" aria-busy="true" aria-label="Loading products">
+          @for (i of skeletons; track i) {
+            <li><p-skeleton height="11rem" borderRadius="10px" /></li>
+          }
+        </ul>
+      }
+    </div>
+  </div>
+</section>
+
+<p-drawer
+  [visible]="filtersOpen()"
+  (visibleChange)="filtersOpen.set($event)"
+  position="bottom"
+  styleClass="filter-drawer"
+  header="Filters"
+  [blockScroll]="true"
+>
+  <app-filter-panel idPrefix="drawer" [facets]="shown()?.facets" [state]="state()" (changed)="update($event)" />
+  <ng-template #footer>
+    <div class="drawer-footer">
+      <p-button label="Clear all" severity="secondary" [text]="true" (onClick)="clearAll()" [disabled]="!hasCriteria()" />
+      <p-button [label]="'Show ' + (shown()?.total ?? '') + ' products'" (onClick)="filtersOpen.set(false)" />
+    </div>
+  </ng-template>
+</p-drawer>

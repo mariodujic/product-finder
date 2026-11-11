@@ -1,0 +1,168 @@
+@use '../../../styles/breakpoints' as bp;
+
+.search {
+  &__header {
+    padding: 1.5rem 0 1rem;
+  }
+
+  &__title {
+    margin: 0 0 0.25rem;
+    font-size: clamp(1.4rem, 4vw, 2rem);
+    color: var(--pf-primary);
+  }
+
+  &__lead {
+    margin: 0 0 1rem;
+    color: var(--pf-text-muted);
+  }
+
+  &__form {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    max-width: 40rem;
+  }
+
+  &__field {
+    flex: 1;
+
+    input {
+      width: 100%;
+      min-height: 3rem;
+      font-size: 1rem; // ≥16px: no auto-zoom on iOS
+    }
+  }
+
+  &__layout {
+    display: grid;
+    gap: 1.5rem;
+
+    @include bp.desktop {
+      grid-template-columns: 16rem minmax(0, 1fr);
+    }
+  }
+
+  &__sidebar {
+    display: none;
+
+    @include bp.desktop {
+      display: block;
+      position: sticky;
+      top: 5rem;
+      align-self: start;
+      max-height: calc(100vh - 6rem);
+      overflow-y: auto;
+      padding-right: 0.5rem;
+    }
+  }
+}
+
+.toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin-bottom: 0.75rem;
+
+  &__count {
+    margin: 0;
+  }
+
+  &__actions {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  &__filters-btn {
+    @include bp.desktop {
+      display: none;
+    }
+  }
+}
+
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin: 0 0 1rem;
+  padding: 0;
+  list-style: none;
+}
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  min-height: 2rem;
+  padding: 0.25rem 0.75rem;
+  border: 1px solid var(--pf-primary);
+  border-radius: 999px;
+  background: var(--pf-chip-bg);
+  color: var(--pf-primary);
+  font: inherit;
+  font-size: 0.85rem;
+  cursor: pointer;
+
+  .pi {
+    font-size: 0.7rem;
+  }
+
+  &--clear {
+    border-color: transparent;
+    background: transparent;
+    text-decoration: underline;
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--pf-accent);
+    outline-offset: 2px;
+  }
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 17rem), 1fr));
+  gap: 1rem;
+  margin: 0 0 1rem;
+  padding: 0;
+  list-style: none;
+  transition: opacity 0.15s;
+
+  &--loading {
+    opacity: 0.55;
+  }
+}
+
+.empty {
+  padding: 3rem 1rem;
+  text-align: center;
+  color: var(--pf-text-muted);
+
+  &__icon {
+    font-size: 2rem;
+  }
+
+  h2 {
+    color: var(--pf-text);
+    font-size: 1.2rem;
+  }
+}
+
+.drawer-footer {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+:host ::ng-deep .filter-drawer {
+  height: 85vh;
+  border-radius: 16px 16px 0 0;
+}
+
+:host ::ng-deep .state-message .p-message-text {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}

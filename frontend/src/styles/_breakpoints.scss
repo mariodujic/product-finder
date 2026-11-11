@@ -1,0 +1,8 @@
+// Mobile first: base styles target phones; these mixins add larger layouts.
+$desktop: 992px;
+
+@mixin desktop {
+  @media (min-width: $desktop) {
+    @content;
+  }
+}

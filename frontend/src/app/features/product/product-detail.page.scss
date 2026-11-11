@@ -1,0 +1,161 @@
+@use '../../../styles/breakpoints' as bp;
+
+.detail-nav {
+  padding: 0.75rem 0;
+  margin-left: -0.75rem;
+}
+
+.detail {
+  &__header {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 1rem;
+    margin-bottom: 1rem;
+  }
+
+  &__header-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  &__sku {
+    margin: 0;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    color: var(--pf-text-muted);
+  }
+
+  &__name {
+    margin: 0.15rem 0;
+    font-size: clamp(1.5rem, 5vw, 2.2rem);
+    color: var(--pf-primary);
+  }
+
+  &__chemical {
+    margin: 0;
+    font-size: 1.1rem;
+  }
+
+  &__layout {
+    display: grid;
+    gap: 2rem;
+    margin-top: 1.5rem;
+
+    @include bp.desktop {
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+      align-items: start;
+    }
+  }
+}
+
+:host ::ng-deep .detail__notice {
+  margin-bottom: 1rem;
+}
+
+.section-title {
+  margin: 0 0 0.75rem;
+  font-size: 1.15rem;
+}
+
+.sheet {
+  padding: 1.25rem;
+  border: 1px solid var(--pf-border);
+  border-radius: 10px;
+  background: var(--pf-surface);
+
+  &__list {
+    margin: 0 0 1.5rem;
+
+    > div {
+      display: grid;
+      grid-template-columns: 9.5rem minmax(0, 1fr);
+      gap: 0.75rem;
+      padding: 0.6rem 0;
+      border-bottom: 1px solid var(--pf-border);
+    }
+
+    dt {
+      font-weight: 600;
+      color: var(--pf-text-muted);
+    }
+
+    dd {
+      margin: 0;
+    }
+  }
+
+  &__description {
+    margin: 0;
+    line-height: 1.6;
+  }
+}
+
+.certs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.cert {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.2rem 0.6rem;
+  border-radius: 999px;
+  background: var(--pf-chip-bg);
+  color: var(--pf-chip-text);
+  font-size: 0.85rem;
+}
+
+.reviews {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+
+  .section-title {
+    margin: 0;
+  }
+
+  &__summary {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  &__average {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: var(--pf-primary);
+  }
+
+  &__count {
+    font-size: 0.9rem;
+    color: var(--pf-text-muted);
+  }
+
+  &__none {
+    margin: 0;
+    color: var(--pf-text-muted);
+  }
+}
+
+.state {
+  padding: 3rem 1rem;
+  text-align: center;
+
+  &__icon {
+    font-size: 2.5rem;
+    color: var(--pf-text-muted);
+  }
+}
+
+.loading {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}

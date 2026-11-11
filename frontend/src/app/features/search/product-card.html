@@ -1,0 +1,40 @@
+@let p = product();
+<a class="card" [routerLink]="['/products', p.sku]">
+  <div class="card__head">
+    <h2 class="card__name">{{ p.name }}</h2>
+    @if (p.status !== 'ACTIVE') {
+      <app-status-tag [status]="p.status" />
+    }
+  </div>
+  <p class="card__chemical">{{ p.chemicalName }}</p>
+  <p class="card__meta">
+    <span>{{ p.function }}</span>
+    <span aria-hidden="true">·</span>
+    <span>{{ p.applicationArea }}</span>
+    <span aria-hidden="true">·</span>
+    <span>{{ p.region }}</span>
+  </p>
+
+  @if (p.certifications.length) {
+    <ul class="card__certs" aria-label="Certifications">
+      @for (cert of visibleCertifications(); track cert) {
+        <li class="cert">{{ cert }}</li>
+      }
+      @if (hiddenCertificationCount()) {
+        <li class="cert cert--more">+{{ hiddenCertificationCount() }} more</li>
+      }
+    </ul>
+  }
+
+  <div class="card__foot">
+    <span class="card__sku">{{ p.sku }}</span>
+    @if (p.rating.count) {
+      <span class="card__rating" [attr.aria-label]="'Rated ' + p.rating.average + ' out of 5 from ' + p.rating.count + ' reviews'">
+        <i class="pi pi-star-fill" aria-hidden="true"></i>
+        {{ p.rating.average }} <span class="card__rating-count">({{ p.rating.count }})</span>
+      </span>
+    } @else {
+      <span class="card__rating card__rating--none">No reviews yet</span>
+    }
+  </div>
+</a>
