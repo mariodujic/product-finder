@@ -1,7 +1,9 @@
+import { ApiPropertyOptional } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
 import { IsInt, IsOptional, Max, Min } from 'class-validator';
 
 export class ReviewQueryDto {
+  @ApiPropertyOptional({ minimum: 1, maximum: 10_000, default: 1 })
   @IsOptional()
   @Type(() => Number)
   @IsInt()
@@ -9,6 +11,7 @@ export class ReviewQueryDto {
   @Max(10_000)
   page: number = 1;
 
+  @ApiPropertyOptional({ minimum: 1, maximum: 50, default: 10 })
   @IsOptional()
   @Type(() => Number)
   @IsInt()

@@ -2,8 +2,8 @@ import { definePreset } from '@primeuix/themes';
 import Aura from '@primeuix/themes/aura';
 
 /**
- * Aura with a corporate dark-blue primary scale, inspired by BASF's corporate
- * colours (500 = #004a96). The values are design tokens: swap in the official
+ * Aura with a corporate dark-blue primary scale
+ * (500 = #004a96). The values are design tokens: swap in the official
  * palette here and every PrimeNG component follows.
  */
 export const ProductFinderPreset = definePreset(Aura, {
